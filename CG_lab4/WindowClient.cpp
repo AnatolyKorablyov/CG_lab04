@@ -41,6 +41,77 @@ glm::mat4 MakeProjectionMatrix(const glm::ivec2 &size)
 }
 }
 
+glm::vec3 GetRGBhueOnName(const std::string & colorName)
+{
+	glm::vec3 hueRGB;
+	if (colorName == "green")
+	{
+		hueRGB.r = std::rand() % 100;
+		hueRGB.g = std::rand() % 115 + 139;
+		hueRGB.b = 0;
+	}
+	else if (colorName == "grey")
+	{
+		auto randNum = std::rand() % 130;
+		hueRGB = { randNum, randNum, randNum };
+	}
+	else if (colorName == "red")
+	{
+		hueRGB.r = std::rand() % 115 + 139;
+		hueRGB.g = std::rand() % 100;
+		hueRGB.b = 0;
+	}
+	return hueRGB;
+}
+
+void FillingInPixels(SDL_Surface * pSur, Uint32 * pixels, const std::string & colorName)
+{
+	glm::vec3 hueRGB;
+	for (int x = 0; x < pSur->w; x++)
+	{
+		for (int y = 0; y < pSur->h; y++)
+		{
+			hueRGB = GetRGBhueOnName(colorName);
+			pixels[x + y*(pSur->w)] = SDL_MapRGB(pSur->format, hueRGB.r, hueRGB.g, hueRGB.b);
+		}
+	}
+}
+
+void CWindowClient::ProcedureGenerationTextures()
+{
+	std::string colorName = "random";
+
+	for (int i = 0; i < 4; i++)
+	{
+		auto pTexture = m_world.getEntity(i).getComponent<CMeshComponent>().m_pModel.get()->m_materials[0].pDiffuse.get();
+
+		SDL_Surface *pSur = SDL_CreateRGBSurface(0, 5 * 160, 5 * 160, 32, 0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000);
+
+		Uint32* pixel = (Uint32 *)pSur->pixels;
+
+		switch (i)
+		{
+		case 0:
+			colorName = "green";
+			break;
+		case 3:
+			colorName = "red";
+			break;
+		default:
+			colorName = "grey";
+		}
+
+		FillingInPixels(pSur, pixel, colorName);
+
+		pTexture->Bind();
+		pTexture->ApplyImageData(*pSur);
+		pTexture->ApplyTrilinearFilter();
+		pTexture->ApplyMaxAnisotropy();
+		pTexture->GenerateMipmaps();
+		pTexture->Unbind();
+	}
+}
+
 CWindowClient::CWindowClient(CWindow &window)
     : CAbstractWindowClient(window)
     , m_defaultVAO(CArrayObject::do_bind_tag())
@@ -61,53 +132,7 @@ CWindowClient::CWindowClient(CWindow &window)
     loader.LoadSkybox(SKYBOX_PLIST);
 
 
-	for (int i = 0; i < 4; i++)
-	{
-		auto pTexture = m_world.getEntity(i).getComponent<CMeshComponent>().m_pModel.get()->m_materials[0].pDiffuse.get();
-
-		SDL_Surface *pSur = SDL_CreateRGBSurface(0, 5 * 160, 5 * 160, 32, 0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000);
-
-		Uint32* pixel = (Uint32 *)pSur->pixels;
-
-		if (i == 0)
-		{
-			for (int x = 0; x < pSur->w; x++)
-			{
-				for (int y = 0; y < pSur->h; y++)
-					pixel[x + y*(pSur->w)] = SDL_MapRGB(pSur->format, std::rand() % 100, std::rand() % 115 + 139, 0);
-			}
-		}
-		else if (i == 3)
-		{
-			for (int x = 0; x < pSur->w; x++)
-			{
-				for (int y = 0; y < pSur->h; y++)
-				{
-					auto randNumber = std::rand() % 130;
-					pixel[x + y*(pSur->w)] = SDL_MapRGB(pSur->format, randNumber, std::rand() % 130, randNumber);
-				}
-			}
-		}
-		else
-		{
-			for (int x = 0; x < pSur->w; x++)
-			{
-				for (int y = 0; y < pSur->h; y++)
-				{
-					auto randNumber = std::rand() % 130;
-					pixel[x + y*(pSur->w)] = SDL_MapRGB(pSur->format, randNumber, randNumber, randNumber);
-				}
-			}
-		}
-
-		pTexture->Bind();
-		pTexture->ApplyImageData(*pSur);
-		pTexture->ApplyTrilinearFilter();
-		pTexture->ApplyMaxAnisotropy();
-		pTexture->GenerateMipmaps();
-		pTexture->Unbind();
-	}
-
+	ProcedureGenerationTextures();
 
 
     // Добавляем систему, отвечающую за рендеринг планет.

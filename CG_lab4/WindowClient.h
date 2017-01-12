@@ -11,7 +11,8 @@ class CWindowClient
         : public CAbstractWindowClient
 {
 public:
-    CWindowClient(CWindow &window);
+	void ProcedureGenerationTextures();
+	CWindowClient(CWindow &window);
 
 protected:
     // IWindowClient interface
