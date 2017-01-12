@@ -7,6 +7,8 @@ using glm::mat4;
 using glm::vec3;
 using glm::vec4;
 
+const unsigned NUMBER_MODELS_TO_GENERATE_TEXTURES = 4;
+
 namespace
 {
 const vec3 CAMERA_EYE = {0, 10, 20};
@@ -81,7 +83,7 @@ void CWindowClient::ProcedureGenerationTextures()
 {
 	std::string colorName = "random";
 
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < NUMBER_MODELS_TO_GENERATE_TEXTURES; i++)
 	{
 		auto pTexture = m_world.getEntity(i).getComponent<CMeshComponent>().m_pModel.get()->m_materials[0].pDiffuse.get();
 
