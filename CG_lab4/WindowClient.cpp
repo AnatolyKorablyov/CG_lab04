@@ -2,6 +2,7 @@
 #include "WindowClient.h"
 #include "includes/opengl-common.hpp"
 #include <glm/gtc/matrix_transform.hpp>
+#include "TextureGenerator.h"
 
 using glm::mat4;
 using glm::vec3;
@@ -43,24 +44,24 @@ glm::mat4 MakeProjectionMatrix(const glm::ivec2 &size)
 }
 }
 
-glm::vec3 GetRGBhueOnName(const std::string & colorName)
+glm::vec3 GetRGBhueOnName(const std::string & colorName, int colorValue)
 {
 	glm::vec3 hueRGB;
 	if (colorName == "green")
 	{
-		hueRGB.r = std::rand() % 100;
-		hueRGB.g = std::rand() % 115 + 139;
+		hueRGB.r = std::rand() % colorValue;
+		hueRGB.g = colorValue;
 		hueRGB.b = 0;
 	}
 	else if (colorName == "grey")
 	{
-		auto randNum = std::rand() % 130;
-		hueRGB = { randNum, randNum, randNum };
+		//auto randNum = std::rand() % 130;
+		hueRGB = { colorValue, colorValue, colorValue };
 	}
 	else if (colorName == "red")
 	{
-		hueRGB.r = std::rand() % 115 + 139;
-		hueRGB.g = std::rand() % 100;
+		hueRGB.r = std::rand() % colorValue + colorValue * 2;
+		hueRGB.g = colorValue;
 		hueRGB.b = 0;
 	}
 	return hueRGB;
@@ -68,12 +69,13 @@ glm::vec3 GetRGBhueOnName(const std::string & colorName)
 
 void FillingInPixels(SDL_Surface * pSur, Uint32 * pixels, const std::string & colorName)
 {
+	auto txVector = CreateFaultVector(1000, 1000, 100, 1);
 	glm::vec3 hueRGB;
 	for (int x = 0; x < pSur->w; x++)
 	{
 		for (int y = 0; y < pSur->h; y++)
 		{
-			hueRGB = GetRGBhueOnName(colorName);
+			hueRGB = GetRGBhueOnName(colorName, txVector[x][y]);
 			pixels[x + y*(pSur->w)] = SDL_MapRGB(pSur->format, hueRGB.r, hueRGB.g, hueRGB.b);
 		}
 	}
@@ -87,7 +89,9 @@ void CWindowClient::ProcedureGenerationTextures()
 	{
 		auto pTexture = m_world.getEntity(i).getComponent<CMeshComponent>().m_pModel.get()->m_materials[0].pDiffuse.get();
 
-		SDL_Surface *pSur = SDL_CreateRGBSurface(0, 5 * 160, 5 * 160, 32, 0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000);
+		auto sizeTexture = m_world.getEntity(i).getComponent<CMeshComponent>().m_pModel.get()->m_materials[0].pDiffuse.get()->GetSize();
+
+		SDL_Surface *pSur = SDL_CreateRGBSurface(0, 1000, 1000, 32, 0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000);
 
 		Uint32* pixel = (Uint32 *)pSur->pixels;
 
