@@ -49,7 +49,7 @@ glm::vec3 GetRGBhueOnName(const std::string & colorName, int colorValue)
 	glm::vec3 hueRGB;
 	if (colorName == "green")
 	{
-		hueRGB.r = std::rand() % colorValue;
+		hueRGB.r = 0;
 		hueRGB.g = colorValue;
 		hueRGB.b = 0;
 	}
@@ -60,7 +60,7 @@ glm::vec3 GetRGBhueOnName(const std::string & colorName, int colorValue)
 	}
 	else if (colorName == "red")
 	{
-		hueRGB.r = std::rand() % colorValue + colorValue * 2;
+		hueRGB.r = colorValue;//std::rand() % colorValue + colorValue * 2;
 		hueRGB.g = colorValue;
 		hueRGB.b = 0;
 	}
@@ -69,7 +69,9 @@ glm::vec3 GetRGBhueOnName(const std::string & colorName, int colorValue)
 
 void FillingInPixels(SDL_Surface * pSur, Uint32 * pixels, const std::string & colorName)
 {
-	auto txVector = CreateFaultVector(1000, 1000, 100, 1);
+	//auto txVector = CreateFaultVector(1000, 1000, 100, 1);
+	auto txVector = CreateCellularVector(1000, 1000, 10);
+
 	glm::vec3 hueRGB;
 	for (int x = 0; x < pSur->w; x++)
 	{

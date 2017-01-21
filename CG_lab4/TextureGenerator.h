@@ -53,4 +53,68 @@ std::vector<std::vector<int>> CreateFaultVector(int w, int h, int countItr, int 
 	return picsels;
 }
 
+int DistToPoint(int x1, int y1, int x2, int y2)
+{
+	double dist = sqrt(std::pow((x2 - x1), 2) + std::pow((y2 - y1), 2));
+	return dist;
+}																 
 
+std::vector<std::vector<int>> CreateCellularVector(int w, int h, int countVertix)
+{
+	std::vector<std::vector<int>> picsels(w, std::vector<int>(h, 128));
+	std::vector<std::vector<int>> distBuffer(w, std::vector<int>(h, 128));
+
+	std::vector<int> xcoords(countVertix);
+	std::vector<int> ycoords(countVertix);
+	std::vector<int> distPoint(countVertix);
+
+
+	for (int i = 0; i < countVertix; ++i)
+	{
+		xcoords[i] = std::rand() % w;
+		ycoords[i] = std::rand() % h;
+	}
+
+	double dist = 0.0;
+	auto maxDist = 1;
+	auto theSmallestDist = 1000;
+	for (int y = 0; y < distBuffer.size(); y++)
+	{
+		for (int x = 0; x < distBuffer[y].size(); x++)
+		{
+			auto minDist = 1000;
+			
+			for (int j = 0; j < countVertix; ++j)
+			{
+				if (x != xcoords[j] && y != ycoords[j])
+				{
+					dist = DistToPoint(x, y, xcoords[j], ycoords[j]);
+					if (minDist > dist)
+					{
+						distBuffer[y][x] = dist;
+						minDist = dist;
+					}
+					else if (maxDist < dist)
+					{
+						maxDist = dist;
+					}
+					if (theSmallestDist > minDist)
+					{
+						theSmallestDist = minDist;
+					}
+				}
+			}
+		}
+	}
+
+	for (int y = 0; y < picsels.size(); y++)
+	{
+		for (int x = 0; x < picsels[y].size(); x++)
+		{
+			picsels[y][x] = ((distBuffer[y][x] - theSmallestDist) * 255) / (maxDist / theSmallestDist);
+		}
+	}
+	return picsels;
+}
+
+											   
