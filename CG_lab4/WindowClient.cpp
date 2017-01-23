@@ -71,6 +71,10 @@ void FillingInPixels(SDL_Surface * pSur, Uint32 * pixels, const std::string & co
 {
 	//auto txVector = CreateFaultVector(1000, 1000, 100, 1);
 	auto textureGenerator = ITextureGenerator();
+	/*if (colorName == "grey")
+	{
+		auto txVector = textureGenerator.CreateCellularTexture(100, 100, 20, 2);
+	}*/
 	auto txVector = textureGenerator.CreateCellularTexture(100, 100, 20, 1);
 	//auto txVector = CreateCellularVector(1000, 1000, 100);
 
