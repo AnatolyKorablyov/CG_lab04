@@ -2,7 +2,7 @@
 #include "WindowClient.h"
 #include "includes/opengl-common.hpp"
 #include <glm/gtc/matrix_transform.hpp>
-#include "TextureGenerator.h"
+#include "ITextureGenerator.h"
 
 using glm::mat4;
 using glm::vec3;
@@ -70,11 +70,13 @@ glm::vec3 GetRGBhueOnName(const std::string & colorName, int colorValue)
 void FillingInPixels(SDL_Surface * pSur, Uint32 * pixels, const std::string & colorName)
 {
 	//auto txVector = CreateFaultVector(1000, 1000, 100, 1);
-	auto txVector = CreateCellularVector(1000, 1000, 10);
+	auto textureGenerator = ITextureGenerator();
+	auto txVector = textureGenerator.CreateCellularTexture(100, 100, 20, 1);
+	//auto txVector = CreateCellularVector(1000, 1000, 100);
 
 	glm::vec3 hueRGB;
 	for (int x = 0; x < pSur->w; x++)
-	{
+	{													
 		for (int y = 0; y < pSur->h; y++)
 		{
 			hueRGB = GetRGBhueOnName(colorName, txVector[x][y]);
@@ -93,7 +95,7 @@ void CWindowClient::ProcedureGenerationTextures()
 
 		auto sizeTexture = m_world.getEntity(i).getComponent<CMeshComponent>().m_pModel.get()->m_materials[0].pDiffuse.get()->GetSize();
 
-		SDL_Surface *pSur = SDL_CreateRGBSurface(0, 1000, 1000, 32, 0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000);
+		SDL_Surface *pSur = SDL_CreateRGBSurface(0, 100, 100, 32, 0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000);
 
 		Uint32* pixel = (Uint32 *)pSur->pixels;
 

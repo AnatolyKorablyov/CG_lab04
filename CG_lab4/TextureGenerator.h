@@ -111,7 +111,7 @@ std::vector<std::vector<int>> CreateCellularVector(int w, int h, int countVertix
 	{
 		for (int x = 0; x < picsels[y].size(); x++)
 		{
-			picsels[y][x] = ((distBuffer[y][x] - theSmallestDist) * 255) / (maxDist / theSmallestDist);
+			picsels[y][x] = 200 - ((distBuffer[y][x] - theSmallestDist) * 255) / (maxDist / theSmallestDist);
 		}
 	}
 	return picsels;
