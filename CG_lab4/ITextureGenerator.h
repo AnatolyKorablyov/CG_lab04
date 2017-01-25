@@ -15,21 +15,27 @@ public:
 	
 	
 	
-	std::vector<std::vector<int>> CreateCellularTexture(int w, int h, int countVertix, int countBasisFunc);
+	std::vector<std::vector<int>> GetCellularTexture(int w, int h, int countVertix, int countBasisFunc);
+
+	
+	std::vector<std::vector<int>> GetUniformCellularTexture(int w, int h, int countVertix, int countBasisFunc);
 
 private:
 	void CreateFault(std::vector<std::vector<int>> & pic, int delta);
 	int DistToPoint(int x1, int y1, int x2, int y2);
 	int GetRandomNumber(int range);
-	void CalcDistancesFirstIteration(std::vector<std::vector<int>>& distBuffer, int countVertix);
+	int GetRandomNumberInRange(int rangeStart, int rangeEnd);
+	void CalcDistances(std::vector<std::vector<int>>& distBuffer, int countVertix, bool isFirst);
 
-	void CalcDistancesNextIteration(std::vector<std::vector<int>>& distBuffer, int countVertix);
+	void ArrangementPoint(std::vector<std::vector<int>>& texture, int countPoint);
 
 	
 private:
 
 	std::vector<int> xcoords;
-	std::vector<int> ycoords;
+	std::vector<int> ycoords;		 
+
+
 	int maxDist = 1;
 	int theSmallestDist = 1000;
 };

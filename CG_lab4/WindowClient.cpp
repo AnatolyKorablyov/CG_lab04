@@ -9,6 +9,7 @@ using glm::vec3;
 using glm::vec4;
 
 const unsigned NUMBER_MODELS_TO_GENERATE_TEXTURES = 4;
+const unsigned TEXTURE_SIZE = 100;
 
 namespace
 {
@@ -60,9 +61,10 @@ glm::vec3 GetRGBhueOnName(const std::string & colorName, int colorValue)
 	}
 	else if (colorName == "red")
 	{
-		hueRGB.r = colorValue;//std::rand() % colorValue + colorValue * 2;
-		hueRGB.g = colorValue;
-		hueRGB.b = 0;
+		auto num = std::rand() % colorValue + colorValue * 2;
+		hueRGB.r = num;
+		hueRGB.g = num;
+		hueRGB.b = num;
 	}
 	return hueRGB;
 }
@@ -71,12 +73,18 @@ void FillingInPixels(SDL_Surface * pSur, Uint32 * pixels, const std::string & co
 {
 	//auto txVector = CreateFaultVector(1000, 1000, 100, 1);
 	auto textureGenerator = ITextureGenerator();
-	/*if (colorName == "grey")
+	std::vector<std::vector<int>> txVector;
+	if (colorName == "green")
 	{
-		auto txVector = textureGenerator.CreateCellularTexture(100, 100, 20, 2);
-	}*/
-	auto txVector = textureGenerator.CreateCellularTexture(100, 100, 20, 1);
-	//auto txVector = CreateCellularVector(1000, 1000, 100);
+		txVector = textureGenerator.CreateFaultTexture(TEXTURE_SIZE, TEXTURE_SIZE, 100, 1);
+		//auto txVector = textureGenerator.CreateCellularTexture(100, 100, 10, 5);
+		
+	}
+	else
+	{
+		txVector = textureGenerator.GetUniformCellularTexture(TEXTURE_SIZE, TEXTURE_SIZE, 100, 1);
+	}
+
 
 	glm::vec3 hueRGB;
 	for (int x = 0; x < pSur->w; x++)
@@ -99,7 +107,7 @@ void CWindowClient::ProcedureGenerationTextures()
 
 		auto sizeTexture = m_world.getEntity(i).getComponent<CMeshComponent>().m_pModel.get()->m_materials[0].pDiffuse.get()->GetSize();
 
-		SDL_Surface *pSur = SDL_CreateRGBSurface(0, 100, 100, 32, 0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000);
+		SDL_Surface *pSur = SDL_CreateRGBSurface(0, TEXTURE_SIZE, TEXTURE_SIZE, 32, 0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000);
 
 		Uint32* pixel = (Uint32 *)pSur->pixels;
 

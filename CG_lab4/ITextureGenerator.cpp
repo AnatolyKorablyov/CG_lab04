@@ -22,7 +22,7 @@ std::vector<std::vector<int>> ITextureGenerator::CreateFaultTexture(int w, int h
 }
 
 
-void ITextureGenerator::CalcDistancesFirstIteration(std::vector<std::vector<int>> & distBuffer, int countVertix)
+void ITextureGenerator::CalcDistances(std::vector<std::vector<int>> & distBuffer, int countVertix, bool isFirst)
 {
 	double dist = 0.0;
 	for (int y = 0; y < distBuffer.size(); y++)
@@ -36,7 +36,17 @@ void ITextureGenerator::CalcDistancesFirstIteration(std::vector<std::vector<int>
 				if (x != xcoords[j] && y != ycoords[j])
 				{
 					dist = DistToPoint(x, y, xcoords[j], ycoords[j]);
-					if (minDist > dist)
+
+					bool minDistLarge;
+					if (isFirst)
+					{
+						minDistLarge = minDist > dist;
+					}
+					else
+					{
+						minDistLarge = minDist > dist && distBuffer[y][x] < dist;
+					}
+					if (minDistLarge)
 					{
 						distBuffer[y][x] = dist;
 						minDist = dist;
@@ -55,42 +65,8 @@ void ITextureGenerator::CalcDistancesFirstIteration(std::vector<std::vector<int>
 	}
 }
 
-void ITextureGenerator::CalcDistancesNextIteration(std::vector<std::vector<int>> & distBuffer, int countVertix)
-{
-	double dist = 0.0;
-	maxDist = 1;
-	theSmallestDist = 1000;
-	for (int y = 0; y < distBuffer.size(); y++)
-	{
-		for (int x = 0; x < distBuffer[y].size(); x++)
-		{
-			auto minDist = 1000;
 
-			for (int j = 0; j < countVertix; ++j)
-			{
-				if (x != xcoords[j] && y != ycoords[j])
-				{
-					dist = DistToPoint(x, y, xcoords[j], ycoords[j]);
-					if (minDist > dist && distBuffer[y][x] < dist)
-					{
-						distBuffer[y][x] = dist;
-						minDist = dist;
-					}
-					else if (maxDist < dist)
-					{
-						maxDist = dist;
-					}
-					if (theSmallestDist > minDist)
-					{
-						theSmallestDist = minDist;
-					}
-				}
-			}
-		}
-	}
-}
-
-std::vector<std::vector<int>> ITextureGenerator::CreateCellularTexture(int w, int h, int countVertix, int countBasisFunc)
+std::vector<std::vector<int>> ITextureGenerator::GetCellularTexture(int w, int h, int countVertix, int countBasisFunc)
 {
 	std::vector<std::vector<int>> picsels(w, std::vector<int>(h, 255));
 	std::vector<std::vector<int>> distBuffer(w, std::vector<int>(h, 0));
@@ -106,11 +82,10 @@ std::vector<std::vector<int>> ITextureGenerator::CreateCellularTexture(int w, in
 		ycoords[i] = std::rand() % h;
 	}
 
-	CalcDistancesFirstIteration(distBuffer, countVertix);
-
-	for (auto i = 0; i < countBasisFunc; ++i)
+	CalcDistances(distBuffer, countVertix, true);
+	for (auto i = 1; i < countBasisFunc; ++i)
 	{
-		CalcDistancesNextIteration(distBuffer, countVertix);
+		CalcDistances(distBuffer, countVertix, false);
 	}
 	
 	for (int y = 0; y < picsels.size(); y++)
@@ -123,6 +98,73 @@ std::vector<std::vector<int>> ITextureGenerator::CreateCellularTexture(int w, in
 	return picsels;
 }
 
+void ITextureGenerator::ArrangementPoint(std::vector<std::vector<int>> & texture, int countPoint)
+{
+	int wSector = texture.size() / 4;
+	int hSector = texture[0].size() / 4;
+	int countSectors = (texture.size() * texture[0].size()) / (wSector * hSector);
+	int xCurrentSector = 0;
+	int yCurrentSector = 0;
+	for (int i = 0; i < countSectors; i++)
+	{
+		int countPointInSector = GetRandomNumberInRange(1, 4);
+		if (countPointInSector > wSector * hSector)
+		{
+			countPointInSector = wSector * hSector;
+		}
+			
+		while (countPointInSector > 0)
+		{
+
+			countPointInSector--;
+			int xPoint = GetRandomNumberInRange(xCurrentSector, xCurrentSector + wSector - 1);
+			int yPoint = GetRandomNumberInRange(yCurrentSector, yCurrentSector + hSector - 1);
+			//std::cout << xPoint << " x " << yPoint << std::endl;
+			if (texture[xPoint][yPoint] != 0)
+				continue;
+			if (countPoint > 0)
+			{
+				xcoords[countPoint] = xPoint;
+				ycoords[countPoint] = yPoint;
+				texture[xPoint][yPoint] = 100;
+				countPoint--;
+			}
+		}
+
+		xCurrentSector += wSector;
+		if (xCurrentSector >= texture[0].size())
+		{
+			xCurrentSector = 0;
+			yCurrentSector += hSector;
+		}
+	}
+}
+
+std::vector<std::vector<int>> ITextureGenerator::GetUniformCellularTexture(int w, int h, int countVertix, int countBasisFunc)
+{
+	std::vector<std::vector<int>> picsels(w, std::vector<int>(h, 0));
+	std::vector<std::vector<int>> distBuffer(w, std::vector<int>(h, 0));
+	xcoords.resize(countVertix + 1);
+	ycoords.resize(countVertix + 1);
+
+	ArrangementPoint(picsels, countVertix);
+
+	CalcDistances(distBuffer, countVertix, true);
+	for (auto i = 1; i < countBasisFunc; ++i)
+	{
+		CalcDistances(distBuffer, countVertix, false);
+	}
+	for (int y = 0; y < picsels.size(); y++)
+	{
+		for (int x = 0; x < picsels[y].size(); x++)
+		{
+			picsels[y][x] = (255 - distBuffer[y][x] * 10);
+		}
+	}
+	return picsels;
+	
+}
+	
 void ITextureGenerator::CreateFault(std::vector<std::vector<int>>& pic, int delta)
 {
 	int xT1;
@@ -158,5 +200,13 @@ int ITextureGenerator::GetRandomNumber(int range)
 	std::random_device rd;
 	std::mt19937 gen(rd());
 	std::uniform_int_distribution<> dist(0, int(range));
+	return dist(gen);
+}
+
+int ITextureGenerator::GetRandomNumberInRange(int rangeStart, int rangeEnd)
+{
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	std::uniform_int_distribution<> dist(rangeStart, rangeEnd);
 	return dist(gen);
 }
