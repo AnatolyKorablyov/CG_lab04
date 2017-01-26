@@ -2,38 +2,32 @@
     "objects": [
         {
         	"model": "md2/plato_complete.3ds",
-            "position": [-50, 3, 0],
-            "eulerAngles": [0, -1.57, 1.57],
+            "position": [0, 0, 0],
+            "eulerAngles": [0, -1.57, -1.57],
             "size": 0.2
         },
-        {
-            "model": "md2/arka_complete.3ds",
-            "position": [4, 0, 0],
-            "eulerAngles": [0, 0, 0],
-            "size": 0.1
-        },
-        {
-            "model": "md2/stone_complete.MD2",
-            "position": [-4, 0, -3],
-            "eulerAngles": [0, 1.57, 0],
+        {	
+            "model": "md2/two_stone_complete.3ds",
+            "position": [-4, 0, -6],
+            "eulerAngles": [0, 1.57, -1.57],
             "size": 0.1
         },
         {	
-            "model": "md2/two_stone_complete.MD2",
-            "position": [-4, 0, -6],
-            "eulerAngles": [0, 1, 0],
+            "model": "md2/stone_complete.3ds",
+            "position": [4, 0, 0],
+            "eulerAngles": [0, 1.57, -1.57],
             "size": 0.1
         },
-        {
-            "model": "md2/arka_complete.md2",
-            "position": [3, 0, 0],
-            "eulerAngles": [0, 1.57, 0],
+        {	
+            "model": "md2/big_stone_complete.3ds",
+            "position": [3, 0, 3],
+            "eulerAngles": [0, 1.57, -1.57],
             "size": 0.1
         },
-        {
-            "model": "md2/stone_complete.MD2",
-            "position": [-1, 0, -6],
-            "eulerAngles": [0, 0, 0],
+        {	
+            "model": "md2/arka_complete.3ds",
+            "position": [10, 0, 0],
+            "eulerAngles": [0, 1.57, -1.57],
             "size": 0.1
         }
     ]

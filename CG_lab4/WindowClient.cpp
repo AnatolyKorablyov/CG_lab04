@@ -2,14 +2,13 @@
 #include "WindowClient.h"
 #include "includes/opengl-common.hpp"
 #include <glm/gtc/matrix_transform.hpp>
-#include "ITextureGenerator.h"
+#include "ProcedureGeneration.h"
 
 using glm::mat4;
 using glm::vec3;
 using glm::vec4;
 
-const unsigned NUMBER_MODELS_TO_GENERATE_TEXTURES = 4;
-const unsigned TEXTURE_SIZE = 100;
+const unsigned NUMBER_MODELS_TO_GENERATE_TEXTURES = 5;
 
 namespace
 {
@@ -45,60 +44,10 @@ glm::mat4 MakeProjectionMatrix(const glm::ivec2 &size)
 }
 }
 
-glm::vec3 GetRGBhueOnName(const std::string & colorName, int colorValue)
-{
-	glm::vec3 hueRGB;
-	if (colorName == "green")
-	{
-		hueRGB.r = 0;
-		hueRGB.g = colorValue;
-		hueRGB.b = 0;
-	}
-	else if (colorName == "grey")
-	{
-		//auto randNum = std::rand() % 130;
-		hueRGB = { colorValue, colorValue, colorValue };
-	}
-	else if (colorName == "red")
-	{
-		auto num = std::rand() % colorValue + colorValue * 2;
-		hueRGB.r = num;
-		hueRGB.g = num;
-		hueRGB.b = num;
-	}
-	return hueRGB;
-}
-
-void FillingInPixels(SDL_Surface * pSur, Uint32 * pixels, const std::string & colorName)
-{
-	//auto txVector = CreateFaultVector(1000, 1000, 100, 1);
-	auto textureGenerator = ITextureGenerator();
-	std::vector<std::vector<int>> txVector;
-	if (colorName == "green")
-	{
-		txVector = textureGenerator.CreateFaultTexture(TEXTURE_SIZE, TEXTURE_SIZE, 100, 1);
-		//auto txVector = textureGenerator.CreateCellularTexture(100, 100, 10, 5);
-		
-	}
-	else
-	{
-		txVector = textureGenerator.GetUniformCellularTexture(TEXTURE_SIZE, TEXTURE_SIZE, 100, 1);
-	}
-
-
-	glm::vec3 hueRGB;
-	for (int x = 0; x < pSur->w; x++)
-	{													
-		for (int y = 0; y < pSur->h; y++)
-		{
-			hueRGB = GetRGBhueOnName(colorName, txVector[x][y]);
-			pixels[x + y*(pSur->w)] = SDL_MapRGB(pSur->format, hueRGB.r, hueRGB.g, hueRGB.b);
-		}
-	}
-}
-
 void CWindowClient::ProcedureGenerationTextures()
 {
+	CProcedureGeneration procGeneration;
+
 	std::string colorName = "random";
 
 	for (int i = 0; i < NUMBER_MODELS_TO_GENERATE_TEXTURES; i++)
@@ -107,7 +56,7 @@ void CWindowClient::ProcedureGenerationTextures()
 
 		auto sizeTexture = m_world.getEntity(i).getComponent<CMeshComponent>().m_pModel.get()->m_materials[0].pDiffuse.get()->GetSize();
 
-		SDL_Surface *pSur = SDL_CreateRGBSurface(0, TEXTURE_SIZE, TEXTURE_SIZE, 32, 0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000);
+		SDL_Surface *pSur = SDL_CreateRGBSurface(0, 100, 100, 32, 0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000);
 
 		Uint32* pixel = (Uint32 *)pSur->pixels;
 
@@ -122,8 +71,9 @@ void CWindowClient::ProcedureGenerationTextures()
 		default:
 			colorName = "grey";
 		}
+		
 
-		FillingInPixels(pSur, pixel, colorName);
+		procGeneration.FillingInPixels(pSur, pixel, colorName);
 
 		pTexture->Bind();
 		pTexture->ApplyImageData(*pSur);

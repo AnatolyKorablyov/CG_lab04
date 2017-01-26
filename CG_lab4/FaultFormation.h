@@ -1,0 +1,31 @@
+#pragma once
+#include <vector>
+#include <random>
+#include <iostream>
+#include <algorithm>
+#include <glm/gtc/matrix_transform.hpp>
+#include "MathFunc.h"
+#include "ITextureGenerator.h"
+
+class CFaultFormation : public ITextureGenerator
+{
+public:
+	CFaultFormation();
+	CFaultFormation(glm::vec2 size, unsigned iter, int delta);
+	~CFaultFormation();
+
+	void SetSize(glm::vec2 size) override;
+	void SetIterations(unsigned iter);
+	void SetDelta(int delta);
+			
+	void CreateTexture();
+	
+	std::vector<std::vector<int>> GetTexture() override;
+
+private:
+	void CreateFault();
+private:
+	unsigned m_iteration = 0;
+	int m_delta = 5;
+};
+
