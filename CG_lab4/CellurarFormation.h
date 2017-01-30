@@ -34,7 +34,8 @@ private:
 	std::vector<int> m_yCoords;
 	int m_maxDist = 1;
 	int m_theSmallestDist = 1000;
-
+	std::vector<std::vector<int>> m_texture;
+	glm::vec2 m_size;
 
 };
 

@@ -13,5 +13,6 @@ public:
 	~CProcedureGeneration();
 	glm::vec3 GetRGBhueOnName(const std::string & colorName, int colorValue);
 	void FillingInPixels(SDL_Surface * pSur, Uint32 * pixels, const std::string & colorName);
+	std::string ChooseColorByNum(unsigned num);
 };
 

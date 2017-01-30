@@ -8,7 +8,7 @@ using glm::mat4;
 using glm::vec3;
 using glm::vec4;
 
-const unsigned NUMBER_MODELS_TO_GENERATE_TEXTURES = 5;
+const unsigned NUMBER_MODELS_TO_GENERATE_TEXTURES = 4;
 
 namespace
 {
@@ -60,18 +60,7 @@ void CWindowClient::ProcedureGenerationTextures()
 
 		Uint32* pixel = (Uint32 *)pSur->pixels;
 
-		switch (i)
-		{
-		case 0:
-			colorName = "green";
-			break;
-		case 3:
-			colorName = "red";
-			break;
-		default:
-			colorName = "grey";
-		}
-		
+		colorName = procGeneration.ChooseColorByNum(i);
 
 		procGeneration.FillingInPixels(pSur, pixel, colorName);
 

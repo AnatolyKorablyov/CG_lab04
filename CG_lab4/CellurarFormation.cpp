@@ -40,7 +40,7 @@ std::vector<std::vector<int>> CCellurarFormation::GetTexture()
 
 void CCellurarFormation::CalcDistances(std::vector<std::vector<int>> & distBuffer, bool isFirst)
 {
-	double dist = 0.0;
+	int dist = 0;
 	for (int y = 0; y < distBuffer.size(); y++)
 	{
 		for (int x = 0; x < distBuffer[y].size(); x++)
@@ -139,7 +139,8 @@ void CCellurarFormation::CalcUniformCellularTexture()
 	{
 		for (int x = 0; x < m_texture[y].size(); x++)
 		{
-			m_texture[y][x] = (255 - distBuffer[y][x] * 10);
+			m_texture[y][x] = GetRandomNumberInRange(240, 255);
+			//m_texture[y][x] = (distBuffer[y][x] * 10);
 		}
 	}
 
@@ -153,6 +154,7 @@ void CCellurarFormation::ArrangementPoint()
 	int xCurrentSector = 0;
 	int yCurrentSector = 0;
 	int countPoint = m_vertexNum;
+
 	for (int i = 0; i < countSectors; i++)
 	{
 		int countPointInSector = GetRandomNumberInRange(1, 4);
@@ -174,7 +176,7 @@ void CCellurarFormation::ArrangementPoint()
 			{
 				m_xCoords[countPoint] = xPoint;
 				m_yCoords[countPoint] = yPoint;
-				//m_texture[xPoint][yPoint] = 100;
+				m_texture[xPoint][yPoint] = 100;
 				countPoint--;
 			}
 		}

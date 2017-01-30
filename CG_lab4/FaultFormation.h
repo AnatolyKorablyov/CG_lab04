@@ -27,5 +27,7 @@ private:
 private:
 	unsigned m_iteration = 0;
 	int m_delta = 5;
+	std::vector<std::vector<int>> m_texture;
+	glm::vec2 m_size;
 };
 
