@@ -48,22 +48,41 @@ void CFaultFormation::CreateTexture()
 	}
 }
 
-std::vector<std::vector<int>> CFaultFormation::GetTexture()
+std::unique_ptr<SDL_Surface> CFaultFormation::GenerateTexture(const std::string & colorName)
+{
+	std::vector<std::vector<int>> txVector = GenerateIntensityMatrix();
+	std::unique_ptr<SDL_Surface> texture(SDL_CreateRGBSurface(0, m_size.x, m_size.y, 32, 0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000));
+
+	Uint32* pixels = (Uint32 *)texture->pixels;
+
+	glm::vec3 hueRGB;
+	for (int x = 0; x < texture->w; x++)
+	{
+		for (int y = 0; y < texture->h; y++)
+		{
+			hueRGB = CMathFuncs::GetRGBhueOnName(colorName, txVector[x][y]);
+			pixels[x + y*(texture->w)] = SDL_MapRGB(texture->format, hueRGB.r, hueRGB.g, hueRGB.b);
+		}
+	}
+
+	return texture;
+}
+
+std::vector<std::vector<int>> CFaultFormation::GenerateIntensityMatrix()
 {
 	return m_texture;
 }
 
 void CFaultFormation::CreateFault()
 {
-	CMathFuncs maths;
 	int xT1;
 	int xB1;
 	int xT2;
 	int xB2;
-	xT1 = maths.GetRandomNumber(m_texture[0].size());
-	xB1 = maths.GetRandomNumber(m_texture[0].size());
-	xT2 = maths.GetRandomNumber(xT1);
-	xB2 = maths.GetRandomNumber(xB1);
+	xT1 = CMathFuncs::GetRandomNumber(m_texture[0].size());
+	xB1 = CMathFuncs::GetRandomNumber(m_texture[0].size());
+	xT2 = CMathFuncs::GetRandomNumber(xT1);
+	xB2 = CMathFuncs::GetRandomNumber(xB1);
 	for (int y = 0; y < m_texture.size(); y++)
 	{
 		int xLine1 = ((xT1 - xB1) * y) / m_texture.size() + xB1;

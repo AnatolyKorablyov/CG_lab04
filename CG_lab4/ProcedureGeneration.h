@@ -11,8 +11,12 @@ class CProcedureGeneration
 public:
 	CProcedureGeneration();
 	~CProcedureGeneration();
-	glm::vec3 GetRGBhueOnName(const std::string & colorName, int colorValue);
+	SDL_Surface * GetCellularTextureByColor(const std::string & colorName);
+	SDL_Surface * GetFaultFormationTextureByColor(const std::string & colorName);
 	void FillingInPixels(SDL_Surface * pSur, Uint32 * pixels, const std::string & colorName);
 	std::string ChooseColorByNum(unsigned num);
+
+private:
+	SDL_Surface * m_text;
 };
 

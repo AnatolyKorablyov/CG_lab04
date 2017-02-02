@@ -14,13 +14,14 @@ public:
 	CFaultFormation(glm::vec2 size, unsigned iter, int delta);
 	~CFaultFormation();
 
-	void SetSize(glm::vec2 size) override;
+	void SetSize(glm::vec2 size);
 	void SetIterations(unsigned iter);
 	void SetDelta(int delta);
 			
 	void CreateTexture();
-	
-	std::vector<std::vector<int>> GetTexture() override;
+	std::unique_ptr<SDL_Surface> GenerateTexture(const std::string & colorName) override;
+
+	std::vector<std::vector<int>> GenerateIntensityMatrix() override;
 
 private:
 	void CreateFault();
@@ -29,7 +30,5 @@ private:
 	int m_delta = 5;
 	std::vector<std::vector<int>> m_texture;
 	glm::vec2 m_size;
-
-
 };
 

@@ -11,13 +11,14 @@ public:
 
 	~CCellurarFormation();
 
-	void SetSize(glm::vec2 size) override;
+	void SetSize(glm::vec2 size);
 
 	void SetVertexNumber(int number);
 
 	void SetBasisFuncNumber(int number);
 
-	std::vector<std::vector<int>> GetTexture() override;
+	std::unique_ptr<SDL_Surface> GenerateTexture(const std::string & colorName) override;
+	std::vector<std::vector<int>> GenerateIntensityMatrix() override;
 	void CalcCellularTexture();
 
 	void CalcUniformCellularTexture();
@@ -34,9 +35,7 @@ private:
 	std::vector<int> m_yCoords;
 	int m_maxDist = 1;
 	int m_theSmallestDist = 1000;
-	std::vector<std::vector<int>> m_texture;
+	std::vector<std::vector<int>> m_intensityMatrix;
 	glm::vec2 m_size;
-
-	CMathFuncs maths;
 };
 

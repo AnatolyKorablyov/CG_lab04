@@ -32,16 +32,35 @@ void CCellurarFormation::SetBasisFuncNumber(int number)
 	m_basisFuncNum = number;
 }
 
-std::vector<std::vector<int>> CCellurarFormation::GetTexture()
+std::unique_ptr<SDL_Surface> CCellurarFormation::GenerateTexture(const std::string & colorName)
 {
-	
-	return m_texture;
+	std::vector<std::vector<int>> txVector = GenerateIntensityMatrix();
+	std::unique_ptr<SDL_Surface> texture(SDL_CreateRGBSurface(0, m_size.x, m_size.y, 32, 0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000));
+
+	Uint32* pixels = (Uint32 *)texture->pixels;
+
+	glm::vec3 hueRGB;
+	for (int x = 0; x < texture->w; x++)
+	{
+		for (int y = 0; y < texture->h; y++)
+		{
+			hueRGB = CMathFuncs::GetRGBhueOnName(colorName, txVector[x][y]);
+			pixels[x + y*(texture->w)] = SDL_MapRGB(texture->format, hueRGB.r, hueRGB.g, hueRGB.b);
+		}
+	}
+
+	return texture;
+}
+
+std::vector<std::vector<int>> CCellurarFormation::GenerateIntensityMatrix()
+{
+	CalcCellularTexture();
+	return m_intensityMatrix;
 }
 
 void CCellurarFormation::CalcDistances(std::vector<std::vector<int>> & distBuffer, bool isFirst)
 {
-	
-						
+					
 	int dist = 0;
 	for (int y = 0; y < distBuffer.size(); y++)
 	{
@@ -53,7 +72,7 @@ void CCellurarFormation::CalcDistances(std::vector<std::vector<int>> & distBuffe
 			{
 				if (x != m_xCoords[j] && y != m_yCoords[j])
 				{
-					dist = maths.DistToPoint(x, y, m_xCoords[j], m_yCoords[j]);
+					dist = CMathFuncs::DistToPoint(x, y, m_xCoords[j], m_yCoords[j]);
 
 					bool minDistLarge;
 					if (isFirst)
@@ -86,10 +105,10 @@ void CCellurarFormation::CalcDistances(std::vector<std::vector<int>> & distBuffe
 void CCellurarFormation::CalcCellularTexture()
 {
 	std::vector<std::vector<int>> distBuffer(m_size.y, std::vector<int>(m_size.x, 0));
-	m_texture.resize(m_size.y);
-	for (int j = 0; j < m_texture.size(); ++j)
+	m_intensityMatrix.resize(m_size.y);
+	for (int j = 0; j < m_intensityMatrix.size(); ++j)
 	{
-		m_texture[j].resize(m_size.x);
+		m_intensityMatrix[j].resize(m_size.x);
 	}
 
 	m_xCoords.resize(m_vertexNum);
@@ -109,11 +128,11 @@ void CCellurarFormation::CalcCellularTexture()
 		CalcDistances(distBuffer, false);
 	}
 
-	for (int y = 0; y < m_texture.size(); y++)
+	for (int y = 0; y < m_intensityMatrix.size(); y++)
 	{
-		for (int x = 0; x < m_texture[y].size(); x++)
+		for (int x = 0; x < m_intensityMatrix[y].size(); x++)
 		{
-			m_texture[y][x] = (200 - 2 * ((distBuffer[y][x] - m_theSmallestDist) * 255) / (m_maxDist / m_theSmallestDist));
+			m_intensityMatrix[y][x] = (200 - 2 * ((distBuffer[y][x] - m_theSmallestDist) * 255) / (m_maxDist / m_theSmallestDist));
 		}
 	}
 }
@@ -121,10 +140,10 @@ void CCellurarFormation::CalcCellularTexture()
 void CCellurarFormation::CalcUniformCellularTexture()
 {
 	std::vector<std::vector<int>> distBuffer(m_size.y, std::vector<int>(m_size.x, 0));
-	m_texture.resize(m_size.y);
-	for (int j = 0; j < m_texture.size(); ++j)
+	m_intensityMatrix.resize(m_size.y);
+	for (int j = 0; j < m_intensityMatrix.size(); ++j)
 	{
-		m_texture[j].resize(m_size.x);
+		m_intensityMatrix[j].resize(m_size.x);
 	}
 
 	m_xCoords.resize(m_vertexNum + 1);
@@ -137,12 +156,11 @@ void CCellurarFormation::CalcUniformCellularTexture()
 	{
 		CalcDistances(distBuffer, false);
 	}
-	for (int y = 0; y < m_texture.size(); y++)
+	for (int y = 0; y < m_intensityMatrix.size(); y++)
 	{
-		for (int x = 0; x < m_texture[y].size(); x++)
+		for (int x = 0; x < m_intensityMatrix[y].size(); x++)
 		{
-			m_texture[y][x] = maths.GetRandomNumberInRange(240, 255);
-			//m_texture[y][x] = (distBuffer[y][x] * 10);
+			m_intensityMatrix[y][x] = CMathFuncs::GetRandomNumberInRange(240, 255);
 		}
 	}
 
@@ -151,16 +169,16 @@ void CCellurarFormation::CalcUniformCellularTexture()
 void CCellurarFormation::ArrangementPoint()
 {
 
-	int wSector = m_texture.size() / 4;
-	int hSector = m_texture[0].size() / 4;
-	int countSectors = (m_texture.size() * m_texture[0].size()) / (wSector * hSector);
+	int wSector = m_intensityMatrix.size() / 4;
+	int hSector = m_intensityMatrix[0].size() / 4;
+	int countSectors = (m_intensityMatrix.size() * m_intensityMatrix[0].size()) / (wSector * hSector);
 	int xCurrentSector = 0;
 	int yCurrentSector = 0;
 	int countPoint = m_vertexNum;
 
 	for (int i = 0; i < countSectors; i++)
 	{
-		int countPointInSector = maths.GetRandomNumberInRange(1, 4);
+		int countPointInSector = CMathFuncs::GetRandomNumberInRange(1, 4);
 		if (countPointInSector > wSector * hSector)
 		{
 			countPointInSector = wSector * hSector;
@@ -170,22 +188,22 @@ void CCellurarFormation::ArrangementPoint()
 		{
 
 			countPointInSector--;
-			int xPoint = maths.GetRandomNumberInRange(xCurrentSector, xCurrentSector + wSector - 1);
-			int yPoint = maths.GetRandomNumberInRange(yCurrentSector, yCurrentSector + hSector - 1);
+			int xPoint = CMathFuncs::GetRandomNumberInRange(xCurrentSector, xCurrentSector + wSector - 1);
+			int yPoint = CMathFuncs::GetRandomNumberInRange(yCurrentSector, yCurrentSector + hSector - 1);
 			//std::cout << xPoint << " x " << yPoint << std::endl;
-			if (m_texture[xPoint][yPoint] != 0)
+			if (m_intensityMatrix[xPoint][yPoint] != 0)
 				continue;
 			if (countPoint > 0)
 			{
 				m_xCoords[countPoint] = xPoint;
 				m_yCoords[countPoint] = yPoint;
-				m_texture[xPoint][yPoint] = 100;
+				m_intensityMatrix[xPoint][yPoint] = 100;
 				countPoint--;
 			}
 		}
 
 		xCurrentSector += wSector;
-		if (xCurrentSector >= m_texture[0].size())
+		if (xCurrentSector >= m_intensityMatrix[0].size())
 		{
 			xCurrentSector = 0;
 			yCurrentSector += hSector;

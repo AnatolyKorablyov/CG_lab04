@@ -56,16 +56,10 @@ void CWindowClient::ProcedureGenerationTextures()
 
 		auto sizeTexture = m_world.getEntity(i).getComponent<CMeshComponent>().m_pModel.get()->m_materials[0].pDiffuse.get()->GetSize();
 
-		SDL_Surface *pSur = SDL_CreateRGBSurface(0, 100, 100, 32, 0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000);
-
-		Uint32* pixel = (Uint32 *)pSur->pixels;
-
 		colorName = procGeneration.ChooseColorByNum(i);
 
-		procGeneration.FillingInPixels(pSur, pixel, colorName);
-
 		pTexture->Bind();
-		pTexture->ApplyImageData(*pSur);
+		pTexture->ApplyImageData(*procGeneration.GetCellularTextureByColor(colorName));
 		pTexture->ApplyTrilinearFilter();
 		pTexture->ApplyMaxAnisotropy();
 		pTexture->GenerateMipmaps();
