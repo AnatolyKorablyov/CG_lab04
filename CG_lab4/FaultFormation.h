@@ -4,7 +4,7 @@
 #include <iostream>
 #include <algorithm>
 #include <glm/gtc/matrix_transform.hpp>
-#include "MathFunc.h"
+#include "MathFuncs.h"
 #include "ITextureGenerator.h"
 
 class CFaultFormation : public ITextureGenerator
@@ -29,5 +29,7 @@ private:
 	int m_delta = 5;
 	std::vector<std::vector<int>> m_texture;
 	glm::vec2 m_size;
+
+
 };
 

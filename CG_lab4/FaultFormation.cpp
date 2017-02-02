@@ -55,14 +55,15 @@ std::vector<std::vector<int>> CFaultFormation::GetTexture()
 
 void CFaultFormation::CreateFault()
 {
+	CMathFuncs maths;
 	int xT1;
 	int xB1;
 	int xT2;
 	int xB2;
-	xT1 = GetRandomNumber(m_texture[0].size());
-	xB1 = GetRandomNumber(m_texture[0].size());
-	xT2 = GetRandomNumber(xT1);
-	xB2 = GetRandomNumber(xB1);
+	xT1 = maths.GetRandomNumber(m_texture[0].size());
+	xB1 = maths.GetRandomNumber(m_texture[0].size());
+	xT2 = maths.GetRandomNumber(xT1);
+	xB2 = maths.GetRandomNumber(xB1);
 	for (int y = 0; y < m_texture.size(); y++)
 	{
 		int xLine1 = ((xT1 - xB1) * y) / m_texture.size() + xB1;

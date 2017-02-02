@@ -1,6 +1,6 @@
 #pragma once
 #include "ITextureGenerator.h"
-#include "MathFunc.h"
+#include "MathFuncs.h"
 
 class CCellurarFormation : public ITextureGenerator
 {
@@ -37,5 +37,6 @@ private:
 	std::vector<std::vector<int>> m_texture;
 	glm::vec2 m_size;
 
+	CMathFuncs maths;
 };
 

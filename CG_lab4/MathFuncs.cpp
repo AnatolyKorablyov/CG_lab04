@@ -1,6 +1,12 @@
-#include "MathFunc.h"
+#include "MathFuncs.h"
 
-int GetRandomNumber(int range)
+
+
+CMathFuncs::~CMathFuncs()
+{
+}
+
+int CMathFuncs::GetRandomNumber(int range)
 {
 	std::random_device rd;
 	std::mt19937 gen(rd());
@@ -8,7 +14,7 @@ int GetRandomNumber(int range)
 	return dist(gen);
 }
 
-int GetRandomNumberInRange(int rangeStart, int rangeEnd)
+int CMathFuncs::GetRandomNumberInRange(int rangeStart, int rangeEnd)
 {
 	std::random_device rd;
 	std::mt19937 gen(rd());
@@ -16,7 +22,7 @@ int GetRandomNumberInRange(int rangeStart, int rangeEnd)
 	return dist(gen);
 }
 
-int DistToPoint(int x1, int y1, int x2, int y2)
+int CMathFuncs::DistToPoint(int x1, int y1, int x2, int y2)
 {
 	double dist = sqrt(std::pow((x2 - x1), 2) + std::pow((y2 - y1), 2));
 	return dist;

@@ -40,6 +40,8 @@ std::vector<std::vector<int>> CCellurarFormation::GetTexture()
 
 void CCellurarFormation::CalcDistances(std::vector<std::vector<int>> & distBuffer, bool isFirst)
 {
+	
+						
 	int dist = 0;
 	for (int y = 0; y < distBuffer.size(); y++)
 	{
@@ -51,7 +53,7 @@ void CCellurarFormation::CalcDistances(std::vector<std::vector<int>> & distBuffe
 			{
 				if (x != m_xCoords[j] && y != m_yCoords[j])
 				{
-					dist = DistToPoint(x, y, m_xCoords[j], m_yCoords[j]);
+					dist = maths.DistToPoint(x, y, m_xCoords[j], m_yCoords[j]);
 
 					bool minDistLarge;
 					if (isFirst)
@@ -139,7 +141,7 @@ void CCellurarFormation::CalcUniformCellularTexture()
 	{
 		for (int x = 0; x < m_texture[y].size(); x++)
 		{
-			m_texture[y][x] = GetRandomNumberInRange(240, 255);
+			m_texture[y][x] = maths.GetRandomNumberInRange(240, 255);
 			//m_texture[y][x] = (distBuffer[y][x] * 10);
 		}
 	}
@@ -148,6 +150,7 @@ void CCellurarFormation::CalcUniformCellularTexture()
 
 void CCellurarFormation::ArrangementPoint()
 {
+
 	int wSector = m_texture.size() / 4;
 	int hSector = m_texture[0].size() / 4;
 	int countSectors = (m_texture.size() * m_texture[0].size()) / (wSector * hSector);
@@ -157,7 +160,7 @@ void CCellurarFormation::ArrangementPoint()
 
 	for (int i = 0; i < countSectors; i++)
 	{
-		int countPointInSector = GetRandomNumberInRange(1, 4);
+		int countPointInSector = maths.GetRandomNumberInRange(1, 4);
 		if (countPointInSector > wSector * hSector)
 		{
 			countPointInSector = wSector * hSector;
@@ -167,8 +170,8 @@ void CCellurarFormation::ArrangementPoint()
 		{
 
 			countPointInSector--;
-			int xPoint = GetRandomNumberInRange(xCurrentSector, xCurrentSector + wSector - 1);
-			int yPoint = GetRandomNumberInRange(yCurrentSector, yCurrentSector + hSector - 1);
+			int xPoint = maths.GetRandomNumberInRange(xCurrentSector, xCurrentSector + wSector - 1);
+			int yPoint = maths.GetRandomNumberInRange(yCurrentSector, yCurrentSector + hSector - 1);
 			//std::cout << xPoint << " x " << yPoint << std::endl;
 			if (m_texture[xPoint][yPoint] != 0)
 				continue;
