@@ -8,10 +8,11 @@ CProcedureGeneration::CProcedureGeneration()
 
 
 CProcedureGeneration::~CProcedureGeneration()
-{
+{		
+	delete m_text;
 }
 
-SDL_Surface* CProcedureGeneration::GetCellularTextureByColor(const std::string & colorName)
+SDL_Surface * CProcedureGeneration::GetCellularTextureByColor(const std::string & colorName)
 {
 	CCellurarFormation textureGenerator;
 	textureGenerator.SetSize(glm::vec2(TEXTURE_SIZE, TEXTURE_SIZE));
@@ -22,7 +23,7 @@ SDL_Surface* CProcedureGeneration::GetCellularTextureByColor(const std::string &
 	return m_text;
 }
 
-SDL_Surface* CProcedureGeneration::GetFaultFormationTextureByColor(const std::string & colorName)
+SDL_Surface * CProcedureGeneration::GetFaultFormationTextureByColor(const std::string & colorName)
 {
 	CFaultFormation textureGenerator;
 	textureGenerator.SetSize(glm::vec2(TEXTURE_SIZE, TEXTURE_SIZE));
@@ -31,7 +32,10 @@ SDL_Surface* CProcedureGeneration::GetFaultFormationTextureByColor(const std::st
 	textureGenerator.CreateTexture();
 	m_text = textureGenerator.GenerateTexture(colorName).get();
 	return m_text;
+
 }
+
+
 
 std::string CProcedureGeneration::ChooseColorByNum(unsigned num)
 {

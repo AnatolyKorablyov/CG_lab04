@@ -3,6 +3,7 @@
 #include "includes/opengl-common.hpp"
 #include <glm/gtc/matrix_transform.hpp>
 #include "ProcedureGeneration.h"
+#include <vld.h>
 
 using glm::mat4;
 using glm::vec3;
