@@ -9,7 +9,8 @@ CProcedureGeneration::CProcedureGeneration()
 
 CProcedureGeneration::~CProcedureGeneration()
 {		
-	delete m_text;
+	SDL_FillRect(m_text, NULL, 0x000000);
+	//delete m_text;
 }
 
 SDL_Surface * CProcedureGeneration::GetCellularTextureByColor(const std::string & colorName)
