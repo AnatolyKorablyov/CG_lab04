@@ -11,9 +11,9 @@ class CProcedureGeneration
 public:
 	CProcedureGeneration();
 	~CProcedureGeneration();
-	SDL_Surface * GetCellularTextureByColor(const std::string & colorName);
-	SDL_Surface * GetFaultFormationTextureByColor(const std::string & colorName);
-	std::string ChooseColorByNum(unsigned num);
+	SDL_Surface * GetCellularTextureByColor(glm::vec3 color);
+	SDL_Surface * GetFaultFormationTextureByColor(glm::vec3 color);
+	glm::vec3 ChooseColorByNum(unsigned num);
 
 private:
 	SDL_Surface * m_text;

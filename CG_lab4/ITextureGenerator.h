@@ -13,7 +13,7 @@ public:
 	ITextureGenerator();
 	virtual  ~ITextureGenerator();
 
-	virtual std::unique_ptr<SDL_Surface> GenerateTexture(const std::string & colorName) = 0;
+	virtual std::unique_ptr<SDL_Surface> GenerateTexture(glm::vec2 sizeScreen, glm::vec3 color) = 0;
 
 protected:
 	virtual std::vector<std::vector<int>> GenerateIntensityMatrix() = 0;

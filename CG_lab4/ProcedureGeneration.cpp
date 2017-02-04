@@ -10,44 +10,45 @@ CProcedureGeneration::CProcedureGeneration()
 CProcedureGeneration::~CProcedureGeneration()
 {		
 	SDL_FillRect(m_text, NULL, 0x000000);
-	//delete m_text;
+	delete m_text;
 }
 
-SDL_Surface * CProcedureGeneration::GetCellularTextureByColor(const std::string & colorName)
+SDL_Surface * CProcedureGeneration::GetCellularTextureByColor(glm::vec3 color)
 {
 	CCellurarFormation textureGenerator;
-	textureGenerator.SetSize(glm::vec2(TEXTURE_SIZE, TEXTURE_SIZE));
 	textureGenerator.SetBasisFuncNumber(1);
 	textureGenerator.SetVertexNumber(100);
-	textureGenerator.CalcCellularTexture();
-	m_text = textureGenerator.GenerateTexture(colorName).get();
+	m_text = textureGenerator.GenerateTexture(glm::vec2(TEXTURE_SIZE, TEXTURE_SIZE), color).get();
 	return m_text;
 }
 
-SDL_Surface * CProcedureGeneration::GetFaultFormationTextureByColor(const std::string & colorName)
+SDL_Surface * CProcedureGeneration::GetFaultFormationTextureByColor(glm::vec3 color)
 {
 	CFaultFormation textureGenerator;
-	textureGenerator.SetSize(glm::vec2(TEXTURE_SIZE, TEXTURE_SIZE));
 	textureGenerator.SetDelta(1);
 	textureGenerator.SetIterations(100);
-	textureGenerator.CreateTexture();
-	m_text = textureGenerator.GenerateTexture(colorName).get();
+	m_text = textureGenerator.GenerateTexture(glm::vec2(TEXTURE_SIZE, TEXTURE_SIZE), color).get();
 	return m_text;
-
 }
 
 
 
-std::string CProcedureGeneration::ChooseColorByNum(unsigned num)
+glm::vec3 CProcedureGeneration::ChooseColorByNum(unsigned num)
 {
-	std::string colorName;
+	glm::vec3 color;
 	switch (num)
 	{
 	case 0:
-		colorName = "green";
+		color = {0, 255, 0};
+		break;
+	case 1:
+		color = { 255, 0, 0 };
+		break;
+	case 2:
+		color = { 0, 0, 255 };
 		break;
 	default:
-		colorName = "grey";
+		color = { 200, 200, 200};
 	}
-	return colorName;
+	return color;
 }

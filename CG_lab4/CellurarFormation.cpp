@@ -32,8 +32,9 @@ void CCellurarFormation::SetBasisFuncNumber(int number)
 	m_basisFuncNum = number;
 }
 
-std::unique_ptr<SDL_Surface> CCellurarFormation::GenerateTexture(const std::string & colorName)
+std::unique_ptr<SDL_Surface> CCellurarFormation::GenerateTexture(glm::vec2 sizeScreen, glm::vec3 color)
 {
+	SetSize(sizeScreen);
 	std::vector<std::vector<int>> txVector = GenerateIntensityMatrix();
 	std::unique_ptr<SDL_Surface> texture(SDL_CreateRGBSurface(0, m_size.x, m_size.y, 32, 0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000));
 
@@ -44,8 +45,9 @@ std::unique_ptr<SDL_Surface> CCellurarFormation::GenerateTexture(const std::stri
 	{
 		for (int y = 0; y < texture->h; y++)
 		{
-			hueRGB = CMathFuncs::GetRGBhueOnName(colorName, txVector[x][y]);
-			pixels[x + y*(texture->w)] = SDL_MapRGB(texture->format, hueRGB.r, hueRGB.g, hueRGB.b);
+			hueRGB = CMathFuncs::NormalizeRGBOnColor(color, txVector[x][y]);
+			pixels[x + y*(texture->w)] = SDL_MapRGB(texture->format, hueRGB.r , hueRGB.g, hueRGB.b);
+
 		}
 	}
 

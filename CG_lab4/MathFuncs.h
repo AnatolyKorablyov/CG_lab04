@@ -14,6 +14,8 @@ public:
 	static int GetRandomNumber(int range);
 	static int GetRandomNumberInRange(int rangeStart, int rangeEnd);
 
+	static glm::vec3 NormalizeRGBOnColor(glm::vec3 color, int colorValue);
+
 	static glm::vec3 GetRGBhueOnName(const std::string & colorName, int colorValue);
 	static int DistToPoint(int x1, int y1, int x2, int y2);
 

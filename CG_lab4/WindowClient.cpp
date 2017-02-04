@@ -49,7 +49,7 @@ void CWindowClient::ProcedureGenerationTextures()
 {
 	CProcedureGeneration procGeneration;
 
-	std::string colorName = "random";
+	glm::vec3 color;
 
 	for (int i = 0; i < NUMBER_MODELS_TO_GENERATE_TEXTURES; i++)
 	{
@@ -57,10 +57,10 @@ void CWindowClient::ProcedureGenerationTextures()
 
 		auto sizeTexture = m_world.getEntity(i).getComponent<CMeshComponent>().m_pModel.get()->m_materials[0].pDiffuse.get()->GetSize();
 
-		colorName = procGeneration.ChooseColorByNum(i);
+		color = procGeneration.ChooseColorByNum(i);
 
 		pTexture->Bind();
-		pTexture->ApplyImageData(*procGeneration.GetCellularTextureByColor(colorName));
+		pTexture->ApplyImageData(*procGeneration.GetCellularTextureByColor(color));
 		pTexture->ApplyTrilinearFilter();
 		pTexture->ApplyMaxAnisotropy();
 		pTexture->GenerateMipmaps();

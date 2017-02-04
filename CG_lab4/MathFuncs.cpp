@@ -22,6 +22,12 @@ int CMathFuncs::GetRandomNumberInRange(int rangeStart, int rangeEnd)
 	return dist(gen);
 }
 
+glm::vec3 CMathFuncs::NormalizeRGBOnColor(glm::vec3 color, int colorValue)
+{
+	glm::vec3 hueRGB = { color.r * colorValue, color.g * colorValue, color.b * colorValue };
+	return hueRGB;
+}
+
 glm::vec3 CMathFuncs::GetRGBhueOnName(const std::string & colorName, int colorValue)
 {
 	glm::vec3 hueRGB;

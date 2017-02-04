@@ -17,7 +17,7 @@ public:
 
 	void SetBasisFuncNumber(int number);
 
-	std::unique_ptr<SDL_Surface> GenerateTexture(const std::string & colorName) override;
+	std::unique_ptr<SDL_Surface> GenerateTexture(glm::vec2 sizeScreen, glm::vec3 color) override;
 	std::vector<std::vector<int>> GenerateIntensityMatrix() override;
 	void CalcCellularTexture();
 
