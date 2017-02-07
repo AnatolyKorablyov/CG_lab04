@@ -9,7 +9,7 @@ CProcedureGeneration::CProcedureGeneration()
 
 CProcedureGeneration::~CProcedureGeneration()
 {		
-	SDL_FillRect(m_text, NULL, 0x000000);
+	SDL_FreeSurface(m_text);
 	delete m_text;
 }
 

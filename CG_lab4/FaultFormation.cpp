@@ -66,7 +66,7 @@ std::unique_ptr<SDL_Surface> CFaultFormation::GenerateTexture(glm::vec2 sizeScre
 		}
 	}
 
-	return texture;
+	return std::move(texture);
 }
 
 std::vector<std::vector<int>> CFaultFormation::GenerateIntensityMatrix()

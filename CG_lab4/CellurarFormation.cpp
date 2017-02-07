@@ -51,7 +51,7 @@ std::unique_ptr<SDL_Surface> CCellurarFormation::GenerateTexture(glm::vec2 sizeS
 		}
 	}
 
-	return texture;
+	return std::move(texture);
 }
 
 std::vector<std::vector<int>> CCellurarFormation::GenerateIntensityMatrix()
