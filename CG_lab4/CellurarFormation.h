@@ -36,6 +36,6 @@ private:
 	int m_maxDist = 1;
 	int m_theSmallestDist = 1000;
 	std::vector<std::vector<int>> m_intensityMatrix;
-	glm::vec2 m_size;
+	glm::vec2 m_size;	
 };
 

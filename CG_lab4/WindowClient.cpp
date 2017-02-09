@@ -9,7 +9,7 @@ using glm::mat4;
 using glm::vec3;
 using glm::vec4;
 
-const unsigned NUMBER_MODELS_TO_GENERATE_TEXTURES = 4;
+const unsigned NUMBER_MODELS_TO_GENERATE_TEXTURES = 2;
 
 namespace
 {
@@ -45,27 +45,38 @@ glm::mat4 MakeProjectionMatrix(const glm::ivec2 &size)
 }
 }
 
+void CWindowClient::CleaningTexture()
+{
+	while (m_SDL_textures.size() != 0)
+	{
+		auto temp = m_SDL_textures.front().get();
+		SDL_FreeSurface(temp);
+		m_SDL_textures.erase(m_SDL_textures.begin());
+	}
+}
+
 void CWindowClient::ProcedureGenerationTextures()
 {
 	CProcedureGeneration procGeneration;
 
 	glm::vec3 color;
 
+	
 	for (int i = 0; i < NUMBER_MODELS_TO_GENERATE_TEXTURES; i++)
 	{
 		auto pTexture = m_world.getEntity(i).getComponent<CMeshComponent>().m_pModel.get()->m_materials[0].pDiffuse.get();
 
 		auto sizeTexture = m_world.getEntity(i).getComponent<CMeshComponent>().m_pModel.get()->m_materials[0].pDiffuse.get()->GetSize();
-
 		color = procGeneration.ChooseColorByNum(i);
 
+		m_SDL_textures.push_back(std::move(procGeneration.GetCellularTextureByColor(sizeTexture, color)));
 		pTexture->Bind();
-		pTexture->ApplyImageData(*procGeneration.GetCellularTextureByColor(color));
+		pTexture->ApplyImageData(*m_SDL_textures.back().get());
 		pTexture->ApplyTrilinearFilter();
 		pTexture->ApplyMaxAnisotropy();
 		pTexture->GenerateMipmaps();
 		pTexture->Unbind();
-	}
+	}	
 }
 
 CWindowClient::CWindowClient(CWindow &window)
@@ -98,6 +109,11 @@ CWindowClient::CWindowClient(CWindow &window)
     //  а при добавления новых систем следует
     //  вызывать refresh() у мира.
     m_world.refresh();
+}
+
+CWindowClient::~CWindowClient()
+{
+	CleaningTexture();
 }
 
 void CWindowClient::OnUpdate(float deltaSeconds)

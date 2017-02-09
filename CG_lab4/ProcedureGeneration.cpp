@@ -9,26 +9,25 @@ CProcedureGeneration::CProcedureGeneration()
 
 CProcedureGeneration::~CProcedureGeneration()
 {		
-	SDL_FreeSurface(m_text);
-	delete m_text;
+	SDL_FreeSurface(m_text.get());
 }
 
-SDL_Surface * CProcedureGeneration::GetCellularTextureByColor(glm::vec3 color)
+std::unique_ptr<SDL_Surface> CProcedureGeneration::GetCellularTextureByColor(glm::vec2 size, glm::vec3 color)
 {
 	CCellurarFormation textureGenerator;
 	textureGenerator.SetBasisFuncNumber(1);
 	textureGenerator.SetVertexNumber(100);
-	m_text = textureGenerator.GenerateTexture(glm::vec2(TEXTURE_SIZE, TEXTURE_SIZE), color).get();
-	return m_text;
+	m_text = std::move(textureGenerator.GenerateTexture(size, color));
+	return std::move(m_text);
 }
 
-SDL_Surface * CProcedureGeneration::GetFaultFormationTextureByColor(glm::vec3 color)
+std::unique_ptr<SDL_Surface> CProcedureGeneration::GetFaultFormationTextureByColor(glm::vec2 size, glm::vec3 color)
 {
 	CFaultFormation textureGenerator;
 	textureGenerator.SetDelta(1);
 	textureGenerator.SetIterations(100);
-	m_text = textureGenerator.GenerateTexture(glm::vec2(TEXTURE_SIZE, TEXTURE_SIZE), color).get();
-	return m_text;
+	m_text = std::move(textureGenerator.GenerateTexture(size, color));
+	return std::move(m_text);
 }
 
 

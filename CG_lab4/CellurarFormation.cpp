@@ -41,17 +41,17 @@ std::unique_ptr<SDL_Surface> CCellurarFormation::GenerateTexture(glm::vec2 sizeS
 	Uint32* pixels = (Uint32 *)texture->pixels;
 
 	glm::vec3 hueRGB;
-	for (int x = 0; x < texture->w; x++)
+	for (int x = 0; x < texture->h; x++)
 	{
-		for (int y = 0; y < texture->h; y++)
+		for (int y = 0; y < texture->w; y++)
 		{
 			hueRGB = CMathFuncs::NormalizeRGBOnColor(color, txVector[x][y]);
-			pixels[x + y*(texture->w)] = SDL_MapRGB(texture->format, hueRGB.r , hueRGB.g, hueRGB.b);
+			pixels[x + y*(texture->h)] = SDL_MapRGB(texture->format, hueRGB.r , hueRGB.g, hueRGB.b);
 
 		}
 	}
 
-	return std::move(texture);
+	return texture;
 }
 
 std::vector<std::vector<int>> CCellurarFormation::GenerateIntensityMatrix()
