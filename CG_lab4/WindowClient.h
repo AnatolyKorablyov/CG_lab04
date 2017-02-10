@@ -12,7 +12,6 @@ class CWindowClient
         : public CAbstractWindowClient
 {
 public:
-	void CleaningTexture();
 	void ProcedureGenerationTextures();
 	CWindowClient(CWindow &window);
 	~CWindowClient();

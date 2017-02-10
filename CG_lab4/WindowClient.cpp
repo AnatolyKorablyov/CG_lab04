@@ -45,13 +45,6 @@ glm::mat4 MakeProjectionMatrix(const glm::ivec2 &size)
 }
 }
 
-void CWindowClient::CleaningTexture()
-{
-	for (auto i = m_texturesVector.begin(); i != m_texturesVector.end(); ++i)
-	{
-		SDL_FreeSurface(i->get());
-	}
-}
 
 void CWindowClient::ProcedureGenerationTextures()
 {
@@ -111,7 +104,6 @@ CWindowClient::CWindowClient(CWindow &window)
 
 CWindowClient::~CWindowClient()
 {
-	CleaningTexture();
 }
 
 void CWindowClient::OnUpdate(float deltaSeconds)
