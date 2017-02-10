@@ -13,7 +13,6 @@ CFaultFormation::CFaultFormation(glm::vec2 size, unsigned iter, int delta)
 
 CFaultFormation::~CFaultFormation()
 {
-	SDL_FreeSurface(m_texture.get());
 }
 
 void CFaultFormation::SetSize(glm::vec2 size)
@@ -49,25 +48,25 @@ void CFaultFormation::CreateTexture()
 	}
 }
 
-std::unique_ptr<SDL_Surface> CFaultFormation::GenerateTexture(glm::vec2 sizeScreen, glm::vec3 color)
+std::unique_ptr<SDL_Surface, CloserStruct> CFaultFormation::GenerateTexture(glm::vec2 sizeScreen, glm::vec3 color)
 {
 	SetSize(sizeScreen);
 	std::vector<std::vector<int>> txVector = GenerateIntensityMatrix();
-	m_texture = std::unique_ptr<SDL_Surface>(SDL_CreateRGBSurface(0, m_size.x, m_size.y, 32, 0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000));
+	std::unique_ptr<SDL_Surface, CloserStruct> texture(SDL_CreateRGBSurface(0, m_size.x, m_size.y, 32, 0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000));
 
-	Uint32* pixels = (Uint32 *)m_texture->pixels;
+	Uint32* pixels = (Uint32 *)texture->pixels;
 
 	glm::vec3 hueRGB;
-	for (int x = 0; x < m_texture->w; x++)
+	for (int x = 0; x < texture->w; x++)
 	{
-		for (int y = 0; y < m_texture->h; y++)
+		for (int y = 0; y < texture->h; y++)
 		{
 			hueRGB = CMathFuncs::NormalizeRGBOnColor(color, txVector[x][y]);
-			pixels[x + y*(m_texture->w)] = SDL_MapRGB(m_texture->format, hueRGB.r, hueRGB.g, hueRGB.b);
+			pixels[x + y*(texture->w)] = SDL_MapRGB(texture->format, hueRGB.r, hueRGB.g, hueRGB.b);
 		}
 	}
 
-	return std::move(m_texture);
+	return std::move(texture);
 }
 
 std::vector<std::vector<int>> CFaultFormation::GenerateIntensityMatrix()

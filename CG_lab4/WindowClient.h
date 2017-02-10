@@ -6,6 +6,7 @@
 #include "SceneLoader.h"
 #include "RenderSystem.h"
 #include <vector>
+#include "MathFuncs.h"
 
 class CWindowClient
         : public CAbstractWindowClient
@@ -36,5 +37,5 @@ private:
     CMouseGrabber m_mouseGrabber;
     CCamera m_camera;
 
-	std::vector<std::unique_ptr<SDL_Surface>> m_texturesVector;
+	std::vector<std::unique_ptr<SDL_Surface, CloserStruct>> m_texturesVector;
 };

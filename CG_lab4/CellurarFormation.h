@@ -17,7 +17,7 @@ public:
 
 	void SetBasisFuncNumber(int number);
 
-	std::unique_ptr<SDL_Surface> GenerateTexture(glm::vec2 sizeScreen, glm::vec3 color) override;
+	std::unique_ptr<SDL_Surface, CloserStruct> GenerateTexture(glm::vec2 sizeScreen, glm::vec3 color) override;
 	std::vector<std::vector<int>> GenerateIntensityMatrix() override;
 	void CalcCellularTexture();
 
@@ -35,7 +35,6 @@ private:
 	std::vector<int> m_yCoords;
 	int m_maxDist = 1;
 	int m_theSmallestDist = 1000;
-	std::unique_ptr<SDL_Surface> m_texture;
 	std::vector<std::vector<int>> m_intensityMatrix;
 	glm::vec2 m_size;	
 };

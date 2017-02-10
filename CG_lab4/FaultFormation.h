@@ -19,7 +19,7 @@ public:
 	void SetDelta(int delta);
 			
 	void CreateTexture();
-	std::unique_ptr<SDL_Surface> GenerateTexture(glm::vec2 sizeScreen, glm::vec3 color) override;
+	std::unique_ptr<SDL_Surface, CloserStruct> GenerateTexture(glm::vec2 sizeScreen, glm::vec3 color) override;
 	std::vector<std::vector<int>> GenerateIntensityMatrix() override;
 
 private:
@@ -27,7 +27,6 @@ private:
 private:
 	unsigned m_iteration = 0;
 	int m_delta = 5;
-	std::unique_ptr<SDL_Surface> m_texture;
 	std::vector<std::vector<int>> m_intensityMatrix;
 	glm::vec2 m_size;
 };

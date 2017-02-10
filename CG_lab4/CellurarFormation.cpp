@@ -13,7 +13,6 @@ CCellurarFormation::CCellurarFormation()
 
 CCellurarFormation::~CCellurarFormation()
 {
-	SDL_FreeSurface(m_texture.get());
 }
 
 
@@ -33,26 +32,30 @@ void CCellurarFormation::SetBasisFuncNumber(int number)
 	m_basisFuncNum = number;
 }
 
-std::unique_ptr<SDL_Surface> CCellurarFormation::GenerateTexture(glm::vec2 sizeScreen, glm::vec3 color)
+
+std::unique_ptr<SDL_Surface, CloserStruct> CCellurarFormation::GenerateTexture(glm::vec2 sizeScreen, glm::vec3 color)
 {
 	SetSize(sizeScreen);
 	std::vector<std::vector<int>> txVector = GenerateIntensityMatrix();
-	m_texture = std::unique_ptr<SDL_Surface>(SDL_CreateRGBSurface(0, m_size.x, m_size.y, 32, 0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000));
 
-	Uint32* pixels = (Uint32 *)m_texture->pixels;
+
+	std::unique_ptr<SDL_Surface, CloserStruct> texture(SDL_CreateRGBSurface(0, m_size.x, m_size.y, 32, 0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000));
+
+	
+	Uint32* pixels = (Uint32 *)texture->pixels;
 
 	glm::vec3 hueRGB;
-	for (int x = 0; x < m_texture->h; x++)
+	for (int x = 0; x < texture->h; x++)
 	{
-		for (int y = 0; y < m_texture->w; y++)
+		for (int y = 0; y < texture->w; y++)
 		{
 			hueRGB = CMathFuncs::NormalizeRGBOnColor(color, txVector[x][y]);
-			pixels[x + y*(m_texture->h)] = SDL_MapRGB(m_texture->format, hueRGB.r , hueRGB.g, hueRGB.b);
+			pixels[x + y*(texture->h)] = SDL_MapRGB(texture->format, hueRGB.r , hueRGB.g, hueRGB.b);
 
 		}
 	}
 
-	return std::move(m_texture);
+	return std::move(texture);
 }
 
 std::vector<std::vector<int>> CCellurarFormation::GenerateIntensityMatrix()
