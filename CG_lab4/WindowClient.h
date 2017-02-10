@@ -6,7 +6,7 @@
 #include "SceneLoader.h"
 #include "RenderSystem.h"
 #include <vector>
-#include "MathFuncs.h"
+#include "ITextureGenerator.h"
 
 class CWindowClient
         : public CAbstractWindowClient

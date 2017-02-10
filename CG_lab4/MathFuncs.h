@@ -4,11 +4,7 @@
 #include <iostream>
 #include <algorithm>
 #include <glm/gtc/matrix_transform.hpp>
-#include <SDL2/SDL_surface.h>
 
-struct CloserStruct {
-	void operator()(SDL_Surface* f) { SDL_FreeSurface(f); }
-};
 
 class CMathFuncs
 {

@@ -8,6 +8,10 @@
 #include <SDL2/SDL_surface.h>
 #include "MathFuncs.h"
 
+struct CloserStruct {
+	void operator()(SDL_Surface* f) { SDL_FreeSurface(f); }
+};
+
 class ITextureGenerator
 {
 public:
