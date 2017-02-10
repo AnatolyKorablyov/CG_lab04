@@ -36,5 +36,5 @@ private:
     CMouseGrabber m_mouseGrabber;
     CCamera m_camera;
 
-	std::vector<std::unique_ptr<SDL_Surface>> m_SDL_textures;
+	std::vector<std::unique_ptr<SDL_Surface>> m_texturesVector;
 };

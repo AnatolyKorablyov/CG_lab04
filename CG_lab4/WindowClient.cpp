@@ -9,7 +9,7 @@ using glm::mat4;
 using glm::vec3;
 using glm::vec4;
 
-const unsigned NUMBER_MODELS_TO_GENERATE_TEXTURES = 2;
+const unsigned NUMBER_MODELS_TO_GENERATE_TEXTURES = 4;
 
 namespace
 {
@@ -47,11 +47,9 @@ glm::mat4 MakeProjectionMatrix(const glm::ivec2 &size)
 
 void CWindowClient::CleaningTexture()
 {
-	while (m_SDL_textures.size() != 0)
+	for (auto i = m_texturesVector.begin(); i != m_texturesVector.end(); ++i)
 	{
-		auto temp = m_SDL_textures.front().get();
-		SDL_FreeSurface(temp);
-		m_SDL_textures.erase(m_SDL_textures.begin());
+		SDL_FreeSurface(i->get());
 	}
 }
 
@@ -69,9 +67,9 @@ void CWindowClient::ProcedureGenerationTextures()
 		auto sizeTexture = m_world.getEntity(i).getComponent<CMeshComponent>().m_pModel.get()->m_materials[0].pDiffuse.get()->GetSize();
 		color = procGeneration.ChooseColorByNum(i);
 
-		m_SDL_textures.push_back(std::move(procGeneration.GetCellularTextureByColor(sizeTexture, color)));
+		m_texturesVector.push_back(std::move(procGeneration.GetCellularTextureByColor(sizeTexture, color)));
 		pTexture->Bind();
-		pTexture->ApplyImageData(*m_SDL_textures.back().get());
+		pTexture->ApplyImageData(*m_texturesVector.back().get());
 		pTexture->ApplyTrilinearFilter();
 		pTexture->ApplyMaxAnisotropy();
 		pTexture->GenerateMipmaps();
