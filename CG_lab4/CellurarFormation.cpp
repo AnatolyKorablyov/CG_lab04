@@ -13,7 +13,6 @@ CCellurarFormation::CCellurarFormation()
 
 CCellurarFormation::~CCellurarFormation()
 {
-	std::cout << "hui";
 	SDL_FreeSurface(m_texture.get());
 }
 
